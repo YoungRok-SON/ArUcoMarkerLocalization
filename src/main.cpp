@@ -1,11 +1,16 @@
 /* 
 author      : YoungRok Son
+<<<<<<< HEAD
 Date        : 2023-07-06
+=======
+Date        : 2023-07-01
+>>>>>>> ab00bfc0fa180fabb556fc74233d83c2183691c4
 Email       : dudfhr3349@gmail.com
 Description : This pakcage is for testing indoor UAV localization using ArUco marker of opencv. 
 */
 
 
+<<<<<<< HEAD
 #include "utilities.hpp"
 #include "imageProcessing.hpp"
 
@@ -59,5 +64,13 @@ int main(int argc, char **argv)
 
     std::cout << "main finished..." << std::endl;
 
+=======
+#include "../include/utilities.hpp"
+
+
+int main()
+{
+    std::cout << "main is running..." << std::endl;
+>>>>>>> ab00bfc0fa180fabb556fc74233d83c2183691c4
     return 1;
 }

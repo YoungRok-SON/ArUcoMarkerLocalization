@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* 
 author      : YoungRok Son
 Date        : 2023-07-04
@@ -39,3 +40,6 @@ inline bool importImages(std::string in_img_path, cv::Mat &out_imoprted_img)
 
 
 #endif
+=======
+#include <iostream>
+>>>>>>> ab00bfc0fa180fabb556fc74233d83c2183691c4
