@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(arucoMarkerLocalization)
+project(aruco_marker_localization)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   OpenCV REQUIRED
   image_transport
   cv_bridge
+  nav_msgs
 )
 
 

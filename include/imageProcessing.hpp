@@ -25,9 +25,8 @@ public:
 /* Functions */
     bool stretchImage(cv::Mat in_mat_distorted_img,
                       cv::Mat &out_mat_flated_img);
-    bool getMarkerPose(cv::Mat in_mat_cam_img,
-                       std::vector< cv::Vec3d > &out_vecvec3d_rot_vecs,
-                       std::vector< cv::Vec3d > &out_vecvec3d_trans_vecs);
+    bool getCameraPose(cv::Mat in_mat_cam_img,
+                       std::vector< double > &out_vecd_pose);
 
                         
 
@@ -38,6 +37,7 @@ public:
     cv::Mat m_mat_camera_intrinsic, m_mat_camera_distortion_coeff;
     cv::Mat m_mat_remap_1, m_mat_remap_2;
     int m_i_marker_type;
+    cv::Mat m_mat_detected_marker_img;
 
 };
 

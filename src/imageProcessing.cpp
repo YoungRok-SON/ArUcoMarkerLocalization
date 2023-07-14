@@ -57,9 +57,8 @@ bool imageProcessing::stretchImage(cv::Mat in_mat_distorted_img,
 }
 
 
-bool imageProcessing::getMarkerPose(cv::Mat in_mat_cam_img,
-                                    std::vector< cv::Vec3d > &out_vvec3d_rot_vecs, //vector Vec3d: vvec3d
-                                    std::vector< cv::Vec3d > &out_vvec3d_trans_vecs)
+bool imageProcessing::getCameraPose(cv::Mat in_mat_cam_img,
+                                    std::vector< double > &out_vecd_pose)
 {
     // Aruco marker detection
     std::vector<int> ids;
@@ -70,30 +69,56 @@ bool imageProcessing::getMarkerPose(cv::Mat in_mat_cam_img,
     in_mat_cam_img.copyTo(mat_original_img);
     cv::aruco::detectMarkers(mat_original_img, dictionary, corners, ids);
 
-    if(ids.size() > 0)
-    {
-        cv::aruco::drawDetectedMarkers(mat_original_img,corners,ids);
-    }
-    cv::imshow("Detected Marker View", mat_original_img);
-    cv::waitKey(30);
+    // Draw Detected marker.
+    // if(ids.size() > 0)
+    // {
+    //     cv::aruco::drawDetectedMarkers(mat_original_img,corners,ids);
+    // }
 
 
     // Marker Pose estimation
+    std::vector<cv::Vec3d> out_vvec3d_rot_vecs, out_vvec3d_trans_vecs;
     cv::aruco::estimatePoseSingleMarkers (corners, 0.19, m_mat_camera_intrinsic, g_mat_cam_distortion_coeff, out_vvec3d_rot_vecs, out_vvec3d_trans_vecs);
 
-    cv::Mat pose_img;
-    in_mat_cam_img.copyTo(pose_img);
+    in_mat_cam_img.copyTo(m_mat_detected_marker_img);
     for (int idx = 0; idx < out_vvec3d_rot_vecs.size(); ++idx)
     {
         auto rvec = out_vvec3d_rot_vecs[idx];
         auto tvec = out_vvec3d_trans_vecs[idx];
-        cv::aruco::drawAxis (pose_img, m_mat_camera_intrinsic, g_mat_cam_distortion_coeff, rvec, tvec, 0.1);
+        cv::aruco::drawAxis (m_mat_detected_marker_img, m_mat_camera_intrinsic, g_mat_cam_distortion_coeff, rvec, tvec, 0.1);
         
+        double d_pose_roll = 0;
+        double d_pose_pitch = 0;
+        double d_pose_yaw = 0;
+        double d_pose_x = 0; // Front(x)
+        double d_pose_y = 0; // Right(y)
+        double d_pose_z = 0; // Down(z)
+        
+        // Change coordinate from detection to quad body coordinate.
+        d_pose_roll = -rad2deg(rvec[1]);
+
+        if(rad2deg(rvec[0]) > 0)
+            d_pose_pitch = 180 - rad2deg(rvec[0]) ;
+        else if(rad2deg(rvec[0]) < 0)
+            d_pose_pitch = -180 - rad2deg(rvec[0]);
+        else 
+            d_pose_pitch = 0.;
+            
+        d_pose_yaw = rad2deg(rvec[2]);
+        
+        d_pose_x = - tvec[2];
+        d_pose_y = - tvec[0];
+        d_pose_z = - tvec[1];
+        out_vecd_pose.push_back(d_pose_x);
+        out_vecd_pose.push_back(d_pose_y);
+        out_vecd_pose.push_back(d_pose_z);
+        out_vecd_pose.push_back(rvec[1]);
+        out_vecd_pose.push_back(rvec[0]);
+        out_vecd_pose.push_back(rvec[2]);
+
         std::cout << "Marker id: " << idx << std::endl;
-        std::cout << "Marker pose: " << rvec << std::endl;
-        std::cout << "Marker pose: " << tvec << std::endl;
+        std::cout << "Marker rotation vector_ R: " << d_pose_roll << " P: " << d_pose_pitch << " Y: " << d_pose_yaw << std::endl;
+        std::cout << "Marker translation vector_ F: " << d_pose_x << " R: " << d_pose_y << " D: "<< d_pose_z << std::endl;
     }
-    cv::imshow("Detected Marker pose View", pose_img);
-    cv::waitKey(30);
 
 }

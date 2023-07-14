@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="aruco_marker_localization" type="aruco_marker_localization" name="aruco_marker_localization" output="screen">
+
+    </node>
+</launch>
